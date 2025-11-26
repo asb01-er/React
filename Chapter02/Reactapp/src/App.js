@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import Products from './Products';
+import Products from './Products'; // Import child component
 import { Component } from 'react';
 
 function App() {
@@ -9,6 +9,7 @@ function App() {
       <h1>
         My First Ever React App!
       </h1>
+      {/* Use custom component like an HTML tag */}
       <Products />
     </div>
   );
