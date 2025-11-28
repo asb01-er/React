@@ -5,15 +5,13 @@ import { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import Rating from './Rating';
 import JumboTronComponent from './JumboTronComponent';
+import UserForm from './UserForm';
 
 function App() {
   const isValid = true;
   return (
     <div>
-      <JumboTronComponent>
-        This is a long sentence, and I want to insert content into the
-        jumbotron component from the outside.
-      </JumboTronComponent>
+      <UserForm/>
     </div>
   );
 }

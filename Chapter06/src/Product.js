@@ -15,7 +15,6 @@ class Product extends Component {
                     <Card.Body>
                         <Card.Title>{this.props.data.productName}</Card.Title>
                         {this.props.data.releasedDate}
-                        {/* Reuse the Rating component and pass rating + reviews */}
                         <Rating
                             rating={this.props.data.rating}
                             numOfReviews={this.props.data.numOfReviews}

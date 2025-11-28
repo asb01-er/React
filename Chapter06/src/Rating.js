@@ -5,15 +5,13 @@ import { IoIosStar, IoIosStarOutline } from 'react-icons/io'
 class Rating extends Component {
     constructor(props) {
         super(props);
-        // Initialize local state using the rating passed from props
         this.state = { rating: this.props.rating };
     }
-    // Clicking a star updates the rating in state
+
     handleClick(ratingValue) {
-         // NEVER modify state directly, always use setState
         this.setState({ rating: ratingValue });
     }
-    
+
     render() {
         return (
             <div>
@@ -45,9 +43,10 @@ class Rating extends Component {
                 ) : (
                     <IoIosStarOutline />
                 )} */}
-                
-                {/* // Render stars based on current rating */}
+
                 <h1>Rating: {this.state.rating}</h1>
+
+                <div style={styles.starStyle}>
                 {this.state.rating >= 1 ? (
                     <IoIosStar onClick={this.handleClick.bind(this, 1)} />
                 ) : (
@@ -73,8 +72,16 @@ class Rating extends Component {
                 ) : (
                     <IoIosStarOutline onClick={this.handleClick.bind(this, 5)} />
                 )}
+                </div>
+            
             </div>
         );
     }
 }
 export default Rating;
+
+const styles = {
+    starStyle: {
+        color: 'orange'
+    }
+}

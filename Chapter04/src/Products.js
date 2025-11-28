@@ -38,9 +38,11 @@ class Products extends Component {
             }];
     }
 
-    render() { // Array we want to display
+    render() { // Loop through products array and render <Product /> for each
         const listProducts = this.products.map((product) =>
-            <Product key={product.productName} data={product} />
+            <Product 
+            key={product.productName} // key helps React identity list items
+            data={product} />  // pass product data to child component
         );
         return (
             <div>

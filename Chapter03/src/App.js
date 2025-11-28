@@ -6,7 +6,7 @@ import { Button } from 'react-bootstrap';
 import Rating from './Rating';
 
 function App() {
-  const isValid = true;
+  const isValid = false;
   return (
     <div>
        <h1>
@@ -14,10 +14,11 @@ function App() {
        </h1>
        <br></br>
       <Products />
+      {/* Bootstrap Button - disabled when isValid = true */}
       <Button variant="primary" disabled={isValid}>Default</Button>
 
       <hr></hr>
-
+    {/* Rendering Rating components with different initial ratings */}
       <Rating rating="1" />
       <Rating rating="2" />
       <Rating rating="3" />
