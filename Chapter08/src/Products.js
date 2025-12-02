@@ -46,14 +46,13 @@ class Products extends Component {
         return (
             <div>
                 <ul>{listProducts}</ul>
-                {/* // Show products only if listProducts is not empty */}
                 {/* {listProducts.length > 0 &&
                     <ul>{listProducts}</ul>
                 }
                 {listProducts.length == 0 &&
                     <ul>No Products to display</ul>
                 } */}
-                {/* // Else show message */}
+
                 {listProducts.length > 0 ? (
                     <ul>{listProducts}</ul>
                 ) : (
