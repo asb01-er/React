@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import axios from 'axios'; // npm install axios
 import ReactLoading from 'react-loading';
 import Card from 'react-bootstrap/Card';
-import { Nav } from "react-bootstrap";
 
 class GitHub extends Component {
     constructor() {
         super();
         this.state = {
             data: [],
-            isLoading: false
+            isLoading: true
         };
     }
 
@@ -18,7 +17,7 @@ class GitHub extends Component {
     }
 
     componentDidMount() {
-        // this.getGitHubData('greg');
+        this.getGitHubData('greg');
     }
 
     getGitHubData(_searchTerm) {
@@ -34,13 +33,13 @@ class GitHub extends Component {
     render() {
         const listUsers = this.state.data.map((user) =>
             <Card key={user.id} className="shadow-lg my-3 rounded-4 text-center" style={{ width: '18rem' }}>
-                <Nav.Link href={`/github/user/${user.login}/${user.id}`}>
+                <a href={user.html_url}>
                     <Card.Img
                         className="rounded-top"
                         src={user.avatar_url}
                         style={{ height: "180px", objectFit: "cover" }}
                     />
-                </Nav.Link>
+                </a>
 
                 <Card.Body>
                     <Card.Title>{user.login}</Card.Title>
