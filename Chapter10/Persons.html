@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List of Persons</title>
+    <script src="https://unpkg.com/redux@4.0.1/dist/redux.js"></script>
+  </head>
+  <body>
+    <h1>List of Persons</h1>
+    <script>
+
+        function addPerson(id, name, age) {
+          return {
+            type: "ADD",
+            personData: {
+              id: id,
+              name: name,
+              age: age,
+            },
+          };
+        }
+
+        function removePerson(id) {
+          return {
+            type: "REMOVE",
+            personId: id,
+          };
+        }
+
+
+        const initialState = {
+          persons: [],
+        };
+
+        function reducer(state, action) {
+          if (state === undefined) {
+            state = initialState;
+          }
+          if (action.type === "ADD") {
+            const newPerson = {
+              id: action.personData.id,
+              name: action.personData.name,
+              age: action.personData.age,
+            };
+            return {
+              ...state,
+              persons: state.persons.concat(newPerson),
+            };
+          } else if (action.type === "REMOVE") {
+            return {
+              ...state,
+              persons: state.persons.filter(
+                (person) => person.id !== action.personId
+              ),
+            };
+          } else {
+            return state;
+          }
+        }
+
+      var store = Redux.createStore(reducer);
+      store.subscribe(showState);
+      function showState () {
+      console.log(store.getState());
+      }
+      store.dispatch(addPerson(1,"Greg",5));
+     
+    </script>
+  </body>
+</html>
