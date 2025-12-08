@@ -16,10 +16,14 @@ class GitHub extends Component {
         this.setState({ searchTerm: e.target.value });
     }
 
-    componentDidMount() {
-        this.getGitHubData('greg');
-    }
-
+    // componentDidMount() {
+    //     this.getGitHubData('greg');
+    // }
+    
+    // Search form with handleChange + handleSubmit
+    // Controlled components update searchTerm state on every keypress.
+    // Loader state (isLoading)
+    // Shows spinner while waiting for API response.
     getGitHubData(_searchTerm) {
         axios.get("https://api.github.com/search/users?q=" + _searchTerm)
             .then(res => {

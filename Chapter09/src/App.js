@@ -1,17 +1,37 @@
 import React, { Component } from 'react';
-import * as firebase from 'firebase';
+import User from './User';
+import UserForm from './UserForm';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
+// 404 Component
+class NotFound extends Component {
+  render() {
+    return <div>404 - Page Not Found</div>;
+  }
+}
 
 class App extends Component {
-  constructor() {
-    super();
-    console.log(firebase);
-  }
   render() {
     return (
-      <div>
-        <h1></h1>
-      </div>
+      <BrowserRouter>
+        <Switch>
+
+          {/* Add User */}
+          <Route exact path="/add" component={UserForm} />
+
+          {/* Edit User */}
+          <Route exact path="/edit/:id" component={UserForm} />
+
+          {/* Home */}
+          <Route exact path="/" component={User} />
+
+          {/* 404 fallback */}
+          <Route component={NotFound} />
+
+        </Switch>
+      </BrowserRouter>
     );
   }
 }
+
 export default App;

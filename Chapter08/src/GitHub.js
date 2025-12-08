@@ -18,7 +18,7 @@ class GitHub extends Component {
     }
 
     componentDidMount() {
-        // this.getGitHubData('greg');
+        this.getGitHubData('greg');
     }
 
     getGitHubData(_searchTerm) {

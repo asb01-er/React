@@ -1,59 +1,115 @@
 import React, { Component } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-
+import firebase from "firebase";
+import "firebase/database";
 
 class UserForm extends Component {
     constructor(props) {
         super(props);
+
+        this.id = this.props.match.params.id;
+        this.title = this.id ? "Edit User" : "New User";
+
+        this.state = {
+            username: '',
+            email: '',
+        };
     }
+
+    componentDidMount() {
+        if (this.id) {
+            firebase
+                .database()
+                .ref('/' + this.id)
+                .on('value', snapshot => {
+                    const data = snapshot.val();
+                    if (data) {
+                        this.setState({
+                            username: data.username,
+                            email: data.email,
+                        });
+                    }
+                });
+        }
+    }
+
     render() {
         return (
             <div>
-                <h1>Any place in React app!</h1>
+                <h1>{this.title}</h1>
+
                 <Formik
-                    // Set initial values inside the form
-                    initialValues={{ email: '', password: '' }}
-                    // Validation logic — return an errors object
+                    enableReinitialize={true}
+
+                    initialValues={{
+                        username: this.state.username,
+                        email: this.state.email,
+                    }}
+
                     validate={values => {
                         let errors = {};
-                        if (!values.email) {
-                            errors.email = 'Required';
-                        } else if (values.email.length < 10) {
-                            errors.email = 'Email address too short';
-                        } if (!values.password) {
-                            errors.password = 'Required';
+                        if (!values.username) {
+                            errors.username = 'Username required';
                         }
-                        else if (values.password.length < 8) {
-                            errors.password = 'Password too short';
+                        if (!values.email) {
+                            errors.email = 'Email required';
+                        } else if (values.email.length < 5) {
+                            errors.email = 'Email too short';
                         }
                         return errors;
                     }}
-                    // What happens when user submits the form
+
                     onSubmit={(values, { setSubmitting }) => {
-                        setTimeout(() => {
-                            alert(JSON.stringify(values, null, 2));
-                            setSubmitting(false);
-                        }, 400);
+                        const userRef = firebase.database().ref('/');
+
+                        if (this.id) {
+                            firebase
+                                .database()
+                                .ref('/' + this.id)
+                                .update({
+                                    username: values.username,
+                                    email: values.email,
+                                })
+                                .then(() => this.props.history.push("/"));
+                        } else {
+                            userRef
+                                .push({
+                                    username: values.username,
+                                    email: values.email,
+                                })
+                                .then(() => this.props.history.push("/"));
+                        }
+
+                        setSubmitting(false);
                     }}
                 >
+
                     {({ isSubmitting }) => (
                         <Form>
+
+                            <label>Username</label>
+                            <Field type="text" name="username" />
+                            <div style={{ color: "red", fontWeight: "bold" }}>
+                                <ErrorMessage name="username" />
+                            </div>
+
+                            <label>Email</label>
                             <Field type="email" name="email" />
-                            <span style={{ color: "red", fontWeight: "bold" }}>
-                                <ErrorMessage name="email" component="div" />
-                            </span>
-                            <Field type="password" name="password" />
-                            <span style={{ color: "red", fontWeight: "bold" }}>
-                                <ErrorMessage name="password" component="div" />
-                            </span>
+                            <div style={{ color: "red", fontWeight: "bold" }}>
+                                <ErrorMessage name="email" />
+                            </div>
+
                             <button type="submit" disabled={isSubmitting}>
                                 Submit
                             </button>
+
                         </Form>
                     )}
+
                 </Formik>
-            </div >
-        )
+            </div>
+        );
     }
 }
+
 export default UserForm;

@@ -14,6 +14,7 @@ class AddProduct extends Component {
     render() {
         return (
             <div className="container">
+                <h1>WELCOME TO THE REAL DEAL</h1>
                 <input
                     type="text"
                     placeholder="Product Name"
