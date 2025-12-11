@@ -2,16 +2,23 @@
 <html>
   <head>
     <title>List of Persons</title>
+    <!-- Load Redux Library -->
     <script src="https://unpkg.com/redux@4.0.1/dist/redux.js"></script>
   </head>
   <body>
     <h1>List of Persons</h1>
-    <script>
 
+    <script>
+        // ================================
+        // ACTION CREATORS
+        // ================================
+
+        // This function creates an "ADD" action
+        // It takes a person's id, name, and age, and returns an action object
         function addPerson(id, name, age) {
           return {
-            type: "ADD",
-            personData: {
+            type: "ADD",   // Action type
+            personData: {  // Data payload sent to the reducer
               id: id,
               name: name,
               age: age,
@@ -19,50 +26,90 @@
           };
         }
 
+        // This function creates a "REMOVE" action
+        // Only needs the person's ID to remove them from the state
         function removePerson(id) {
           return {
-            type: "REMOVE",
-            personId: id,
+            type: "REMOVE",  // Action type
+            personId: id,    // Payload (ID of the person to remove)
           };
         }
 
+        // ================================
+        // INITIAL STATE
+        // ================================
 
+        // The starting point of our Redux store
         const initialState = {
-          persons: [],
+          persons: [],  // Starts with an empty array of people
         };
 
+        // ================================
+        // REDUCER (Handles all actions)
+        // ================================
+
         function reducer(state, action) {
+          // If no state exists yet, use the initial state
           if (state === undefined) {
             state = initialState;
           }
+
+          // Handle "ADD" action
           if (action.type === "ADD") {
             const newPerson = {
               id: action.personData.id,
               name: action.personData.name,
               age: action.personData.age,
             };
+
+            // Return a new state object (Redux requires immutability)
             return {
-              ...state,
-              persons: state.persons.concat(newPerson),
+              ...state,                         // Copy existing state
+              persons: state.persons.concat(newPerson),  // Add new person
             };
-          } else if (action.type === "REMOVE") {
+          }
+
+          // Handle "REMOVE" action
+          else if (action.type === "REMOVE") {
             return {
               ...state,
+              // Filter out the person whose id matches personId
               persons: state.persons.filter(
                 (person) => person.id !== action.personId
               ),
             };
-          } else {
+          }
+
+          // If action is unknown, return the current state unchanged
+          else {
             return state;
           }
         }
 
-      var store = Redux.createStore(reducer);
-      store.subscribe(showState);
-      function showState () {
-      console.log(store.getState());
-      }
-      store.dispatch(addPerson(1,"Greg",5));
+        // ================================
+        // STORE
+        // ================================
+
+        // Create a Redux store using our reducer
+        var store = Redux.createStore(reducer);
+
+        // Subscribe a function to be called whenever the state changes
+        store.subscribe(showState);
+
+        // This function logs the current state to the console
+        function showState () {
+          console.log(store.getState());
+        }
+
+        // ================================
+        // DISPATCH ACTIONS
+        // ================================
+
+        // Add a person to the store
+        store.dispatch(addPerson(1, "Greg", 51));
+
+        // Example of removing a person later:
+        store.dispatch(removePerson(1));
      
     </script>
   </body>
