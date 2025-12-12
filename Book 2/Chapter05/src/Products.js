@@ -32,12 +32,17 @@ function Products() {
     }
     const products = getProducts();
 
-    const listProducts = products.map((product)=>
+    const listProducts = products.map((product) =>
         <Product key={product.productName} data={product} />
     );
-    return(
+    return (
         <div>
-            <ul>{listProducts}</ul>
+            {listProducts.length > 0 &&
+                <ul>{listProducts}</ul>
+            }
+            {listProducts.length == 0 &&
+                <ul>No Products to display</ul>
+            }
         </div>
     )
 }
