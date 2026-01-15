@@ -1,0 +1,24 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "text": "finishing writing hooks chapter"
+    },
+    {
+      "id": "2",
+      "text": "play with kids"
+    },
+    {
+      "id": "3",
+      "text": "read bible"
+    },
+    {
+      "id": "eeff0a4a-77cd-41e5-857f-7a12208df02b",
+      "text": "Building Reacting Hooks App"
+    },
+    {
+      "id": "98f8e5ce-da55-46ae-8dc8-7f508fcb7c7f",
+      "text": "Buliding Redux Application"
+    }
+  ]
+}
