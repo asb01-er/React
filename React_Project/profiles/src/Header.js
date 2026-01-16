@@ -1,6 +1,6 @@
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import Home from "./Home";
-import Users from "./Users";
+import AddModel from "./AddModel";
 import NotFound from "./NotFound";
 import { Navbar, Nav, Container } from "react-bootstrap";
 
@@ -19,7 +19,7 @@ function Header() {
 
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route path="/profile" component={Users} />
+        <Route path="/profile" component={AddModel} />
         <Route path="*" component={NotFound} />
       </Switch>
     </BrowserRouter>

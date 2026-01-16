@@ -1,0 +1,136 @@
+{
+  "models": [
+    {
+      "id": "7a04",
+      "name": "John Speed",
+      "status": "Single",
+      "age": 30,
+      "gender": "Male",
+      "nationality": "South African",
+      "contact": {
+        "email": "",
+        "phone": "+27 848745",
+        "rating": 4
+      },
+      "physical": {
+        "height": 185,
+        "weight": 0,
+        "bust": 0,
+        "waist": 0,
+        "hips": 0,
+        "hairColor": "Black",
+        "eyeColor": "",
+        "shoeSize": 0,
+        "clothingSize": ""
+      },
+      "professional": {
+        "employment": "",
+        "experience": "",
+        "agencies": [],
+        "categories": [],
+        "portfolioLinks": []
+      },
+      "skills": {
+        "hobbies": [],
+        "specialSkills": [],
+        "languages": []
+      },
+      "images": [
+        "https://res.cloudinary.com/dan24q0ck/image/upload/v1768475384/izb3d3b6rdydinctuea2.jpg"
+      ]
+    },
+    {
+      "id": "3451",
+      "name": "Ernest Ekelem",
+      "status": "Single",
+      "age": 26,
+      "gender": "Male",
+      "nationality": "South African",
+      "contact": {
+        "email": "erneso@gmail.com",
+        "phone": "+27 640576076"
+      },
+      "physical": {
+        "height": 192,
+        "weight": 72,
+        "bust": 42,
+        "waist": 32,
+        "hips": 15,
+        "hairColor": "Black",
+        "eyeColor": "Black",
+        "shoeSize": 9,
+        "clothingSize": "32"
+      },
+      "professional": {
+        "employment": "",
+        "experience": "",
+        "agencies": [],
+        "categories": [],
+        "portfolioLinks": []
+      },
+      "skills": {
+        "hobbies": [
+          "Football"
+        ],
+        "specialSkills": [
+          "Programming"
+        ],
+        "languages": [
+          "English"
+        ]
+      },
+      "images": [
+        "https://res.cloudinary.com/dan24q0ck/image/upload/v1768476216/qjxewj92459eh7an1r2s.jpg"
+      ]
+    },
+    {
+      "id": "fe46",
+      "name": "Grace Mali",
+      "status": "Single",
+      "age": 23,
+      "gender": "Female",
+      "nationality": "Nigerian",
+      "contact": {
+        "email": "mail@gmail.com",
+        "phone": "+236854325578"
+      },
+      "physical": {
+        "height": 162,
+        "weight": 65,
+        "bust": 34,
+        "waist": 36,
+        "hips": 18,
+        "hairColor": "Black",
+        "eyeColor": "Brown",
+        "shoeSize": 6,
+        "clothingSize": "Medium"
+      },
+      "professional": {
+        "employment": "Student",
+        "experience": "Pro",
+        "agencies": [
+          "Free"
+        ],
+        "categories": [
+          "Runway Modeling"
+        ],
+        "portfolioLinks": []
+      },
+      "skills": {
+        "hobbies": [
+          "Problem Solver"
+        ],
+        "specialSkills": [
+          "Modeling",
+          "Acting"
+        ],
+        "languages": [
+          "English"
+        ]
+      },
+      "images": [
+        "https://res.cloudinary.com/dan24q0ck/image/upload/v1768478384/wbav3yixqjhc262tjfbi.jpg"
+      ]
+    }
+  ]
+}

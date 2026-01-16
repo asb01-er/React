@@ -1,24 +1,26 @@
 import { useState } from "react";
+import axios from "axios";
 import { Button, Form, Card, Container, Row, Col } from "react-bootstrap";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "./firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "./firebase";
 
+// Cloudinary config
+const CLOUD_NAME = "dan24q0ck";
+const UPLOAD_PRESET = "Images";
 
+// Upload single image to Cloudinary
 const uploadImage = async (file) => {
-  const imageRef = ref(
-    storage,
-    `models/${Date.now()}-${file.name}`
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+
+  const res = await axios.post(
+    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+    formData
   );
 
-  await uploadBytes(imageRef, file);
-  const url = await getDownloadURL(imageRef);
-  return url;
+  return res.data.secure_url;
 };
 
-
-function Users() {
+function AddModel() {
   const [name, setName] = useState("");
   const [status, setStatus] = useState("Single");
   const [age, setAge] = useState("");
@@ -66,7 +68,7 @@ function Users() {
     }
 
     try {
-      // 1️⃣ Upload images to 
+      // 1️⃣ Upload images to Cloudinary
       const uploadedImages = [];
       for (let i = 0; i < images.length; i++) {
         const url = await uploadImage(images[i]);
@@ -107,11 +109,8 @@ function Users() {
         images: uploadedImages,
       };
 
-      // 3️⃣ Save directly to Firestore
-      await addDoc(collection(db, "users"), {
-        ...userData,
-        createdAt: serverTimestamp(),
-      });
+      // 3️⃣ Send JSON to backend
+      await axios.post("http://localhost:4000/models", userData);
 
       alert("Model profile added successfully!");
       clearForm();
@@ -220,4 +219,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default AddModel;
