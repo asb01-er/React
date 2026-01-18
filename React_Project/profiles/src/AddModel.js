@@ -1,6 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import { Button, Form, Card, Container, Row, Col } from "react-bootstrap";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "./firebase";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
 
 // Cloudinary config
 const CLOUD_NAME = "dan24q0ck";
@@ -21,6 +25,7 @@ const uploadImage = async (file) => {
 };
 
 function AddModel() {
+  const history = useHistory();
   const [name, setName] = useState("");
   const [status, setStatus] = useState("Single");
   const [age, setAge] = useState("");
@@ -109,32 +114,36 @@ function AddModel() {
         images: uploadedImages,
       };
 
-      // 3️⃣ Send JSON to backend
-      await axios.post("http://localhost:4000/models", userData);
+      await addDoc(collection(db, "model_db"), {
+        ...userData,
+        rating: 0,
+        type: "Fashion",
+        createdAt: serverTimestamp(),
+      });
 
       alert("Model profile added successfully!");
-      clearForm();
+      history.push("/");
     } catch (err) {
       console.error(err);
       alert("Error saving profile");
     }
   };
 
-  const clearForm = () => {
-    setName("");
-    setStatus("Single");
-    setAge("");
-    setGender("");
-    setNationality("");
-    setContactEmail("");
-    setContactPhone("");
-    setHeight(""); setWeight(""); setBust(""); setWaist(""); setHips("");
-    setHairColor(""); setEyeColor(""); setShoeSize(""); setClothingSize("");
-    setEmployment(""); setExperience(""); setAgencies(""); setCategories(""); setPortfolioLinks("");
-    setHobbies(""); setSpecialSkills(""); setLanguages("");
-    setImages([]);
-    setImagePreviews([]);
-  };
+  // const clearForm = () => {
+  //   setName("");
+  //   setStatus("Single");
+  //   setAge("");
+  //   setGender("");
+  //   setNationality("");
+  //   setContactEmail("");
+  //   setContactPhone("");
+  //   setHeight(""); setWeight(""); setBust(""); setWaist(""); setHips("");
+  //   setHairColor(""); setEyeColor(""); setShoeSize(""); setClothingSize("");
+  //   setEmployment(""); setExperience(""); setAgencies(""); setCategories(""); setPortfolioLinks("");
+  //   setHobbies(""); setSpecialSkills(""); setLanguages("");
+  //   setImages([]);
+  //   setImagePreviews([]);
+  // };
 
   return (
     <Container className="mt-5">

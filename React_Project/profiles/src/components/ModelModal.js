@@ -1,8 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Button, Row, Col, Form, Badge } from "react-bootstrap";
 import axios from "axios";
+import { auth } from "./auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { useHistory } from "react-router-dom";
+
 
 function ModelModal({ model, onClose, onDelete, refreshModels }) {
+  const history = useHistory();
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        history.push("/Login");
+      }
+    });
+    return () => unsub();
+  }, [history]);
+
   const [isEditing, setIsEditing] = useState(false);
   const [editedModel, setEditedModel] = useState({ ...model });
 
