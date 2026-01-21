@@ -6,46 +6,93 @@ import useAPI from './useAPI';
 import { v4 as uuidv4 } from 'uuid';
 
 function ToDoList() {
-    // receive state and dispatch from index.js
+
+    // Access global todos state and dispatch function from context
     const { state, dispatch } = useContext(TodosContext);
+
+    // Local state for input field text
     const [todoText, setTodoText] = useState("");
-    const [editMode, setEditMode] = useState(false)
-    const [editTodo, setEditTodo] = useState(null)
+
+    // Determines whether we are editing an existing todo
+    const [editMode, setEditMode] = useState(false);
+
+    // Stores the todo item currently being edited
+    const [editTodo, setEditTodo] = useState(null);
+
+    // Button text changes based on add or edit mode
     const buttonTitle = editMode ? "Edit" : "Add";
-    const endpoint = "http://localhost:3000/todos/"
-    const savedTodos = useAPI(endpoint)
+
+    // API endpoint for todos
+    const endpoint = "http://localhost:3000/todos/";
+
+    // Custom hook that fetches todos from the API
+    const savedTodos = useAPI(endpoint);
+
+    // Whenever savedTodos changes, update global state
     useEffect(() => {
-        dispatch({ type: "get", payload: savedTodos })
-    }, [savedTodos]) // dispatch whoever savedTodos changes
+        dispatch({ type: "get", payload: savedTodos });
+    }, [savedTodos]); // Runs when API data changes
+
+    // Handles adding and editing todos
     const handleSubmit = async event => {
-        event.preventDefault();
+        event.preventDefault(); // Prevent page reload
+
         if (editMode) {
-            await axios.patch(endpoint+editTodo.id,{text:todoText})
-            dispatch({ type: 'edit', payload: { ...editTodo, text: todoText } })
-            setEditMode(false)
-            setEditTodo(null)
+            // Update todo on the server
+            await axios.patch(endpoint + editTodo.id, {
+                text: todoText
+            });
+
+            // Update todo in global state
+            dispatch({
+                type: 'edit',
+                payload: { ...editTodo, text: todoText }
+            });
+
+            // Reset edit state
+            setEditMode(false);
+            setEditTodo(null);
+        } else {
+            // Create a new todo object
+            const newToDo = {
+                id: uuidv4(),
+                text: todoText
+            };
+
+            // Save new todo to the server
+            await axios.post(endpoint, newToDo);
+
+            // Update global state
+            dispatch({
+                type: 'add',
+                payload: newToDo
+            });
         }
-        else {
-            const newToDo = { id: uuidv4(), text: todoText }
-            const response = await axios.post(endpoint, newToDo)
-            dispatch({ type: 'add', payload: newToDo })
-        }
-        setTodoText("") // to clear field after adding
-    }
+
+        // Clear input field after submit
+        setTodoText("");
+    };
+
     return (
         <div>
+
+            {/* Form for adding or editing todos */}
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formBasicEmail">
                     <Form.Control
                         type="text"
                         placeholder="Enter To Do"
-                        onChange={event => setTodoText(event.target.value)} />
+                        onChange={event => setTodoText(event.target.value)}
+                    />
                 </Form.Group>
+
+                {/* Button text switches between Add and Edit */}
                 <Button variant="primary" type="submit">
                     {buttonTitle}
                 </Button>
             </Form>
 
+            {/* Table displaying todos */}
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -54,21 +101,39 @@ function ToDoList() {
                         <th>Delete</th>
                     </tr>
                 </thead>
+
                 <tbody>
+                    {/* Render todos from global state */}
                     {state.todos.map(todo => (
                         <tr key={todo.id}>
+                            {/* Todo text */}
                             <td>{todo.text}</td>
-                            <td onClick={() => {
-                                setTodoText(todo.text)
-                                setEditMode(true)
-                                setEditTodo(todo)
-                            }}>
+
+                            {/* Edit action */}
+                            <td
+                                onClick={() => {
+                                    // Load todo into form for editing
+                                    setTodoText(todo.text);
+                                    setEditMode(true);
+                                    setEditTodo(todo);
+                                }}
+                            >
                                 <Button variant="link">Edit</Button>
                             </td>
-                            <td onClick={async () => {
-                                await axios.delete(endpoint + todo.id)
-                                dispatch({ type: 'delete', payload: todo })
-                            }}>
+
+                            {/* Delete action */}
+                            <td
+                                onClick={async () => {
+                                    // Remove todo from server
+                                    await axios.delete(endpoint + todo.id);
+
+                                    // Remove todo from global state
+                                    dispatch({
+                                        type: 'delete',
+                                        payload: todo
+                                    });
+                                }}
+                            >
                                 <Button variant="link">Delete</Button>
                             </td>
                         </tr>
@@ -76,6 +141,7 @@ function ToDoList() {
                 </tbody>
             </Table>
         </div>
-    )
+    );
 }
+
 export default ToDoList;

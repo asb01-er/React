@@ -3,51 +3,77 @@ import React, { useReducer } from 'react';
 import ToDoList from './ToDoList';
 import { v4 as uuidv4 } from 'uuid';
 
+// Initial global state for todos
 const todosInitialState = {
   todos: []
 };
 
+// Reducer controls how todos state changes
 function todosReducer(state, action) {
   switch (action.type) {
+
     case 'get':
-      return { ...state, todos: action.payload }
+      // Load todos fetched from the API into global state
+      return { ...state, todos: action.payload };
+
     case 'add':
-      // const newToDo = { id: uuidv4(), text: action.payload }
-      // add new todo onto array
-      const addedToDos = [...state.todos,action.payload]
-      // spread our state and assign todos
-      return { ...state, todos: addedToDos }
+      // Add new todo to existing todos array
+      const addedToDos = [...state.todos, action.payload];
+
+      // Return updated state
+      return { ...state, todos: addedToDos };
+
     case 'delete':
-      const filteredTodoState = state.todos.filter(todo => todo.id !==
-        action.payload.id)
-      return { ...state, todos: filteredTodoState }
+      // Remove todo whose id matches payload id
+      const filteredTodoState = state.todos.filter(
+        todo => todo.id !== action.payload.id
+      );
+
+      // Return updated state after deletion
+      return { ...state, todos: filteredTodoState };
+
     case 'edit':
-      const updatedToDo = { ...action.payload }
-      const updatedToDoIndex = state.todos.findIndex(t => t.id ===
-        action.payload.id)
+      // Updated todo object
+      const updatedToDo = { ...action.payload };
+
+      // Find index of todo being edited
+      const updatedToDoIndex = state.todos.findIndex(
+        t => t.id === action.payload.id
+      );
+
+      // Replace old todo with updated todo
       const updatedToDos = [
         ...state.todos.slice(0, updatedToDoIndex),
         updatedToDo,
         ...state.todos.slice(updatedToDoIndex + 1)
       ];
-      return { ...state, todos: updatedToDos }
+
+      // Return updated state
+      return { ...state, todos: updatedToDos };
+
     default:
-      return todosInitialState
+      // Return initial state if action type is unknown
+      return todosInitialState;
   }
 }
 
-export const TodosContext = React.createContext()
+// Create context to share todos state and dispatch globally
+export const TodosContext = React.createContext();
 
 function App() {
-  const [state, dispatch] = useReducer(todosReducer, todosInitialState)
+
+  // useReducer manages global todos state
+  const [state, dispatch] = useReducer(
+    todosReducer,
+    todosInitialState
+  );
+
   return (
+    // Provide state and dispatch to all child components
     <TodosContext.Provider value={{ state, dispatch }}>
       <ToDoList />
     </TodosContext.Provider>
-  )
+  );
 }
 
 export default App;
-
-
-

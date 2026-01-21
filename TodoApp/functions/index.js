@@ -1,22 +1,18 @@
 const functions = require('firebase-functions');
-const express = require('express');
-
+const app = require('express')();
+ 
 const {
-	getAllTodos,
-	getOneTodo,
-	postOneTodo,
-	deleteTodo,
-	editTodo
-} = require('./handlers/todos');
+    getAllTodos,
+    getOneTodo,
+    postOneTodo,
+    deleteTodo,
+    editTodo
+} = require('./APIs/todos')
 
-const app = express();
-
-// Todo routes
 app.get('/todos', getAllTodos);
 app.get('/todo/:todoId', getOneTodo);
 app.post('/todo', postOneTodo);
 app.delete('/todo/:todoId', deleteTodo);
 app.put('/todo/:todoId', editTodo);
 
-// Export API
 exports.api = functions.https.onRequest(app);

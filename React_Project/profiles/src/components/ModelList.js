@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Card, Row, Col, Badge } from "react-bootstrap";
 import ReactStars from "react-rating-stars-component";
 import ModelModal from "./ModelModal";
+
 
 function ModelList() {
   const [models, setModels] = useState([]);
@@ -21,6 +23,16 @@ function ModelList() {
     }));
     setModels(data);
   };
+  const handleDelete = async (id) => {
+  try {
+    await deleteDoc(doc(db, "model_db", id)); // delete from Firestore
+    setModels(models.filter((m) => m.id !== id)); // remove from state
+    setSelectedModel(null); // close modal if open
+  } catch (error) {
+    console.error("Error deleting model:", error);
+  }
+};
+
 
   return (
     <>
@@ -68,6 +80,7 @@ function ModelList() {
         <ModelModal
           model={selectedModel}
           onClose={() => setSelectedModel(null)}
+          onDelete={handleDelete}
         />
       )}
     </>
