@@ -1,51 +1,91 @@
 import { useState, useEffect } from "react";
 import { Modal, Button, Row, Col, Form, Badge } from "react-bootstrap";
-import axios from "axios";
 import { auth } from "./auth";
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
 import { useHistory } from "react-router-dom";
-
 
 function ModelModal({ model, onClose, onDelete, refreshModels }) {
   const history = useHistory();
 
+  /* ----------------------------------------------------
+     AUTH GUARD
+     Redirect user to login if not authenticated
+  ---------------------------------------------------- */
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (!user) {
         history.push("/Login");
       }
     });
+
     return () => unsub();
   }, [history]);
 
+  /* ----------------------------------------------------
+     STATE
+  ---------------------------------------------------- */
   const [isEditing, setIsEditing] = useState(false);
-  const [editedModel, setEditedModel] = useState({ ...model });
 
+  // This holds the editable copy of the model
+  const [editedModel, setEditedModel] = useState({});
+
+  /* ----------------------------------------------------
+     SYNC MODEL → EDITED MODEL
+     Runs every time a new model is passed in
+  ---------------------------------------------------- */
+  useEffect(() => {
+    setEditedModel(model);
+  }, [model]);
+
+  /* ----------------------------------------------------
+     HANDLE INPUT CHANGES
+     Uses functional updates to avoid stale state bugs
+  ---------------------------------------------------- */
   const handleChange = (section, field, value) => {
-    if (section) {
-      setEditedModel({
-        ...editedModel,
-        [section]: { ...editedModel[section], [field]: value },
-      });
-    } else {
-      setEditedModel({ ...editedModel, [field]: value });
-    }
+    setEditedModel((prev) => {
+      // For nested objects like "physical"
+      if (section) {
+        return {
+          ...prev,
+          [section]: {
+            ...prev[section],
+            [field]: value,
+          },
+        };
+      }
+
+      // For top-level fields
+      return {
+        ...prev,
+        [field]: value,
+      };
+    });
   };
 
+  /* ----------------------------------------------------
+     SAVE CHANGES TO BACKEND
+  ---------------------------------------------------- */
   const handleSave = async () => {
-    try {
-      await axios.put(
-        `http://localhost:4000/models/${model.id}`,
-        editedModel
-      );
-      setIsEditing(false);
-      refreshModels();
-    } catch (err) {
-      console.error(err);
-      alert("Failed to save changes");
-    }
-  };
+  try {
+    const modelRef = doc(db, "model_db", model.id);
 
+    await updateDoc(modelRef, editedModel);
+
+    setIsEditing(false);
+    refreshModels();      // re-fetch list
+    onClose();            // close modal
+  } catch (error) {
+    console.error("Error updating model:", error);
+    alert("Failed to save changes");
+  }
+};
+
+
+  /* ----------------------------------------------------
+     UI
+  ---------------------------------------------------- */
   return (
     <Modal show onHide={onClose} size="lg" centered>
       <Modal.Header closeButton>
@@ -54,23 +94,27 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
 
       <Modal.Body>
         <Row>
+          {/* ---------------- LEFT COLUMN ---------------- */}
           <Col md={6}>
             {isEditing ? (
               <Form.Control
-                value={editedModel.name}
-                onChange={(e) => handleChange(null, "name", e.target.value)}
                 className="mb-2"
+                value={editedModel.name || ""}
+                onChange={(e) =>
+                  handleChange(null, "name", e.target.value)
+                }
               />
             ) : (
               <img
-                src={model.images[0]}
+                src={model.images?.[0]}
                 alt={model.name}
                 className="img-fluid rounded mb-2"
               />
             )}
 
+            {/* Thumbnails */}
             <div className="d-flex gap-2 flex-wrap">
-              {model.images.map((img, i) => (
+              {model.images?.map((img, i) => (
                 <img
                   key={i}
                   src={img}
@@ -86,6 +130,7 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
             </div>
           </Col>
 
+          {/* ---------------- RIGHT COLUMN ---------------- */}
           <Col md={6}>
             {isEditing ? (
               <>
@@ -93,7 +138,7 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
                   <Form.Label>Age</Form.Label>
                   <Form.Control
                     type="number"
-                    value={editedModel.age}
+                    value={editedModel.age || ""}
                     onChange={(e) =>
                       handleChange(null, "age", Number(e.target.value))
                     }
@@ -103,7 +148,7 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
                 <Form.Group className="mb-2">
                   <Form.Label>Gender</Form.Label>
                   <Form.Control
-                    value={editedModel.gender}
+                    value={editedModel.gender || ""}
                     onChange={(e) =>
                       handleChange(null, "gender", e.target.value)
                     }
@@ -113,7 +158,7 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
                 <Form.Group className="mb-2">
                   <Form.Label>Nationality</Form.Label>
                   <Form.Control
-                    value={editedModel.nationality}
+                    value={editedModel.nationality || ""}
                     onChange={(e) =>
                       handleChange(null, "nationality", e.target.value)
                     }
@@ -121,11 +166,12 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
                 </Form.Group>
 
                 <h6>Physical</h6>
+
                 <Form.Group className="mb-2">
                   <Form.Label>Height</Form.Label>
                   <Form.Control
                     type="number"
-                    value={editedModel.physical.height}
+                    value={editedModel.physical?.height || ""}
                     onChange={(e) =>
                       handleChange(
                         "physical",
@@ -139,7 +185,7 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
                 <Form.Group className="mb-2">
                   <Form.Label>Hair Color</Form.Label>
                   <Form.Control
-                    value={editedModel.physical.hairColor}
+                    value={editedModel.physical?.hairColor || ""}
                     onChange={(e) =>
                       handleChange("physical", "hairColor", e.target.value)
                     }
@@ -159,14 +205,12 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
                 </p>
 
                 <h6>Physical</h6>
-                <p>Height: {model.physical.height} cm</p>
-                <p>Hair: {model.physical.hairColor}</p>
+                <p>Height: {model.physical?.height} cm</p>
+                <p>Hair: {model.physical?.hairColor}</p>
               </>
             )}
 
-            {!isEditing && (
-              <h6>Skills</h6>
-            )}
+            {!isEditing && <h6>Skills</h6>}
             {!isEditing &&
               model.skills?.specialSkills?.map((s, i) => (
                 <Badge bg="secondary" key={i} className="me-1">
@@ -180,10 +224,16 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
       <Modal.Footer>
         {!isEditing ? (
           <>
-            <Button variant="warning" onClick={() => setIsEditing(true)}>
+            <Button
+              variant="warning"
+              onClick={() => setIsEditing(true)}
+            >
               Edit
             </Button>
-            <Button variant="danger" onClick={() => onDelete(model.id)}>
+            <Button
+              variant="danger"
+              onClick={() => onDelete(model.id)}
+            >
               Delete
             </Button>
           </>
@@ -192,6 +242,7 @@ function ModelModal({ model, onClose, onDelete, refreshModels }) {
             Save Changes
           </Button>
         )}
+
         <Button variant="secondary" onClick={onClose}>
           Close
         </Button>

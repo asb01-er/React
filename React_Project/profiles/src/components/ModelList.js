@@ -81,6 +81,7 @@ function ModelList() {
           model={selectedModel}
           onClose={() => setSelectedModel(null)}
           onDelete={handleDelete}
+          refreshModels={fetchModels}
         />
       )}
     </>

@@ -199,7 +199,7 @@ function AddModel() {
             <Col><Form.Control placeholder="Clothing Size" value={clothingSize} onChange={(e) => setClothingSize(e.target.value)} /></Col>
           </Row>
 
-          {/* Professional Info */}
+          {/* Professional Info
           <h5>Professional Info</h5>
           <Row className="mb-2">
             <Col><Form.Control placeholder="Employment" value={employment} onChange={(e) => setEmployment(e.target.value)} /></Col>
@@ -211,7 +211,7 @@ function AddModel() {
           </Row>
           <Row className="mb-2">
             <Col><Form.Control placeholder="Portfolio Links (comma-separated)" value={portfolioLinks} onChange={(e) => setPortfolioLinks(e.target.value)} /></Col>
-          </Row>
+          </Row> */}
 
           {/* Skills */}
           <h5>Skills & Interests</h5>
